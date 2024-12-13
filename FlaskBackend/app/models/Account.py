@@ -85,6 +85,14 @@ class Account():
         db = get_db()
         with db.cursor() as cursor:
             cursor.execute(
+                'DELETE FROM BrowseHistory WHERE accountId = %s',
+                (accountId,)
+            )
+            cursor.execute(
+                'DELETE FROM ProductHistory WHERE accountId = %s',
+                (accountId,)
+            )
+            cursor.execute(
                 'DELETE FROM Account WHERE accountId = %s AND isAdmin = 0',
                 (accountId,)
             )

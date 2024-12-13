@@ -136,7 +136,7 @@ def get_products_by_category(origin: str, categoryId: int, page: int):
     """
     if page < 1:
         return {"success": False, "message": "Invalid page number."}, 404
-    per_page = 40
+    per_page = 35
 
     body = request.get_json()
     order_by = body.get('order_by')
@@ -299,7 +299,7 @@ def search_products_by_query(query: str):
     ]
     """
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    k = 120
+    k = 105
     query_vector = model.encode(query)
     query_vector = query_vector.astype(np.float32).reshape(1, -1)
 
@@ -357,15 +357,17 @@ def recommend_products_by_history():
         ...
     ]
     """
-
     accountId = g.user.accountId
+    products = ProductHistory.ProductHistory.get_product_histories_by_accountId(accountId)
+    if not products:
+        return {"success": False, "message": "No products found."}, 404
+
     model = SentenceTransformer('all-MiniLM-L6-v2')
     vectorizer = joblib.load('indices/vectorizer.joblib')
     svd = joblib.load('indices/svd.joblib')
     scaler = MinMaxScaler()
-    k = 120
+    k = 105
 
-    products = ProductHistory.ProductHistory.get_product_histories_by_accountId(accountId)
     product_ids = []
     product_origins = []
     for p in products:
