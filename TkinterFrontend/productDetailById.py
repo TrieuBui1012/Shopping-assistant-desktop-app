@@ -60,7 +60,7 @@ class ProductDetailById(tk.Toplevel):
                 label_image.config(image=photo)
                 label_name.image = photo
                 label_name.config(text=next_product['name'], justify='left')
-                label_price.config(text=next_product['price'], justify='left')
+                label_price.config(text='{:,.0f}'.format(float(next_product['price'])), justify='left')
 
         self.frame1 = tk.Frame(self, width=900)
         self.frame2 = tk.Frame(self, width=600)
@@ -107,7 +107,7 @@ class ProductDetailById(tk.Toplevel):
         self.label_image.config(image=photo)
         self.label_image.image = photo
 
-        self.label_price.config(text=data['price'] + 'đ', fg='red', font=("Arial", 14))
+        self.label_price.config(text='{:,.0f}'.format(float(data['price'])) + 'đ', fg='red', font=("Arial", 14))
         review = data['reviewSummary']
         review = review.split('<br>')
 

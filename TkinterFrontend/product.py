@@ -149,14 +149,8 @@ class ProductCard(tk.Tk):
 
             if categories_data['success']:
                 categories = categories_data['data']
-                second_level_categories = []
-                
-                for category in categories:
-                    if 'children' in category:
-                        for subcategory in category['children']:
-                            second_level_categories.append(subcategory)
 
-                self.display_categories(second_level_categories)
+                self.display_categories(categories)
 
             else:
                 print("Error fetching categories")
@@ -380,6 +374,7 @@ class ProductCard(tk.Tk):
                 self.url_load_search_history1()
                 self.display_search_history(history_data["data"])
             else:
+                self.display_search_history([])
                 print("Error fetching search history")
         except requests.RequestException as e:
             print(f"Error fetching search history: {e}")
@@ -423,7 +418,7 @@ class ProductCard(tk.Tk):
             quantitySold_label = tk.Label(product_frame, text=f"Đã bán: {product["quantitySold"]} ", font=("Arial", 10, "italic"), fg="black", bg="white")
             quantitySold_label.pack(side="bottom", anchor='w')
             # Giá và xuất xứ
-            price_label = tk.Label(product_frame, text=f"{product["price"]} VND", font=("Arial", 12, "bold"), fg="red", bg="white")
+            price_label = tk.Label(product_frame, text=f"{'{:,.0f}'.format(float(product['price']))} VND", font=("Arial", 12, "bold"), fg="red", bg="white")
             price_label.pack(side = 'bottom')
 
             # Giá và xuất xứ
@@ -475,6 +470,10 @@ class ProductCard(tk.Tk):
     def load_search(self):
         self.button_comnobox.grid(row=0, column=5, padx=30)#Hiện button
         self.button_comnobox1.grid_forget()
+        if self.label_total_quantity: self.label_total_quantity.config(text='')
+        if self.btn_next: self.btn_next.config(state="disabled")
+        if self.btn_prev: self.btn_prev.config(state="disabled")
+        if self.lable_page: self.lable_page.config(text='1')
         text = self.timkiem.get()
         
         order_by_display = self.order_by_combobox.get()

@@ -25,37 +25,35 @@ def get_categories(origin: str) -> list[dict]:
     categories = Category.Category.get_categories_by_origin(origin)
 
     for c in categories:
-        res.append({
-            'categoryId': c.categoryId,
-            'origin': c.origin,
-            'name': c.name,
-            'imgURL': c.imgURL,
-            'isLeaf': c.isLeaf,
-            'children': []
-        })
+        if c.parentId is None:
+            res.append({
+                'categoryId': c.categoryId,
+                'origin': c.origin,
+                'name': c.name,
+                'imgURL': c.imgURL,
+                'isLeaf': c.isLeaf
+            })
 
     is_not_leaf_queue = []
     for c in res:
         if c['isLeaf']:
             continue
         else:
+            res.remove(c)
             is_not_leaf_queue.append(c)
 
     while len(is_not_leaf_queue) > 0:
         cur_category = is_not_leaf_queue.pop(0)
-        categories = Category.Category.get_categories_by_parentId_origin(cur_category['categoryId'], origin)
+        cur_categories = [c for c in categories if cur_category['categoryId'] == c.parentId]
 
-        for c in categories:
-            cur_category['children'].append({
+        for c in cur_categories:
+            res.append({
                 'categoryId': c.categoryId,
                 'origin': c.origin,
                 'name': c.name,
                 'imgURL': c.imgURL,
-                'isLeaf': c.isLeaf,
-                'children': []
+                'isLeaf': c.isLeaf
             })
-            if not c.isLeaf:
-                is_not_leaf_queue.append(cur_category['children'][-1])
 
     return res
 
